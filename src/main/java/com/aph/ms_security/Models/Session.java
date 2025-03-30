@@ -8,10 +8,10 @@ import java.util.Date;
 @Document
 public class Session {
     @Id
-    String _id;
-    String token;
-    Date expiration;
-    String code2FA;
+    private String _id;
+    private String token;
+    private Date expiration;
+    private String code2FA;
 
     public Session(String token, Date expiration, String code2FA) {
         this.token = token;

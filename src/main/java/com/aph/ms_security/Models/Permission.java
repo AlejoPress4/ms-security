@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Permission {
     @Id
-    String _id;
-    String Url;
-    String Method;
+    private String _id;
+    private String Url;
+    private String Method;
 
     public Permission(String url, String method) {
         Url = url;

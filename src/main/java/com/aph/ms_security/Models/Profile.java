@@ -8,9 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Profile {
     @Id
-    String _Id;
-    String phone;
-    String photo;
+    private String _Id;
+    private String phone;
+    private String photo;
+
 
     public Profile(String phone, String photo) {
         this.phone = phone;

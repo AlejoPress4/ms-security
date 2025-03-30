@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Role {
     @Id
-    String _id;
-    String name;
-    String description;
+    private String _id;
+    private String name;
+    private String description;
 
     public Role(String name, String description) {
         this.name = name;

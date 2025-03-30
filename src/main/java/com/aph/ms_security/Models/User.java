@@ -2,6 +2,7 @@ package com.aph.ms_security.Models;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -10,11 +11,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
     //Atributos
     @Id
-    String _id; //se usa porque en mongo se utilizan los identificadores con rayalpiso
-    String name;
-    String email;
-    String password;
+    private String _id; //se usa porque en mongo se utilizan los identificadores con rayalpiso
+    private String name;
+    private String email;
+    private String password;
 
+    @DBRef
+    private Role role;
+
+    public User() {
+
+    };
     //Constructor
     public User(String name, String email, String password) {
         this.name = name;
@@ -53,6 +60,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
 
