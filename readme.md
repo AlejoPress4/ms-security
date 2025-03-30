@@ -45,17 +45,17 @@ mvn spring-boot:run
 
 
 
-The application will start on `http://localhost:8081`.
+La aplicación se iniciará en `http://localhost:8081`.
 
 ## Endpoints
 
-- **GET /rolePermissions**: Retrieve all role permissions.
-- **GET /rolePermissions/{id}**: Retrieve a specific role permission by ID.
-- **POST /rolePermissions**: Create a new role permission.
-- **PUT /rolePermissions/{id}**: Update an existing role permission by ID.
-- **DELETE /rolePermissions/{id}**: Delete a role permission by ID.
+- **GET /rolePermissions**: Recuperar todos los permisos de roles.
+- **GET /rolePermissions/{id}**: Recuperar un permiso de rol específico por ID.
+- **POST /rolePermissions**: Crear un nuevo permiso de rol.
+- **PUT /rolePermissions/{id}**: Actualizar un permiso de rol existente por ID.
+- **DELETE /rolePermissions/{id}**: Eliminar un permiso de rol por ID.
 
-## Dependencies
+## Dependencias
 
 - Spring Boot
 - Spring Data MongoDB
