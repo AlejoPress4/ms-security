@@ -16,7 +16,7 @@ public class Permission_Controller {
     private Permission_Repository thePermissionRepository;
 
     @GetMapping("")
-    public List<Permission> find() {
+    public List<Permission> findAll(){
         return this.thePermissionRepository.findAll();
     }
 

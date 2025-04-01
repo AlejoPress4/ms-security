@@ -30,7 +30,7 @@ public class ValidatorsService {
     private RolePermission_Repository theRolePermissionRepository;
 
     @Autowired
-    private UserRole_Controller theUserRoleRepository;
+    private UserRole_Repository theUserRoleRepository;
 
     private static final String BEARER_PREFIX = "Bearer ";
     public boolean validationRolePermission(HttpServletRequest request,

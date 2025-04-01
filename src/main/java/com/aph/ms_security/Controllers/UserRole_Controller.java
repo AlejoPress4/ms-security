@@ -27,6 +27,10 @@ public class UserRole_Controller {
     @Autowired
     private UserRole_Repository theUserRoleRepository;
 
+    @GetMapping("")
+    public  List<UserRole>findAll(){
+        return this.theUserRoleRepository.findAll();
+    }
 
     @PostMapping("user/{userId}/role/{roleId}")
     public UserRole create(@PathVariable String userId,

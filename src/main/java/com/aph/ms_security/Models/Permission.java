@@ -9,35 +9,31 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Permission {
     @Id
     private String _id;
-    private String Url;
-    private String Method;
+    private String url;
+    private String method;
 
     public Permission(String url, String method) {
-        Url = url;
-        Method = method;
+        this.url = url;
+        this.method = method;
     }
 
     public String get_id() {
         return _id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
-    }
-
     public String getUrl() {
-        return Url;
+        return url;
     }
 
     public void setUrl(String url) {
-        Url = url;
+        this.url = url;
     }
 
     public String getMethod() {
-        return Method;
+        return method;
     }
 
     public void setMethod(String method) {
-        Method = method;
+        this.method = method;
     }
 }

@@ -1,6 +1,7 @@
 package com.aph.ms_security.Models;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
@@ -12,11 +13,19 @@ public class Session {
     private String token;
     private Date expiration;
     private String code2FA;
+    @DBRef
+    private User user;
 
     public Session(String token, Date expiration, String code2FA) {
         this.token = token;
         this.expiration = expiration;
         this.code2FA = code2FA;
+    }
+
+    public Session(String code2FA, User user, String token){
+        this.code2FA = code2FA;
+        this.user = user;
+        this.token = token;
     }
 
     public String get_id() {

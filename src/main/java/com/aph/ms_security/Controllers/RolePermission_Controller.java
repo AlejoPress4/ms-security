@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("api/role-permission")
+@RequestMapping("role-permission")
 public class RolePermission_Controller {
     @Autowired
     private RolePermission_Repository theRolePermissionRepository;
@@ -36,6 +36,14 @@ public class RolePermission_Controller {
                 .orElse(null);
         Permission thePermission=this.thePermissionRepository.findById((permissionId))
                 .orElse(null);
+
+        if (theRole == null) {
+            System.out.println("Role no encontrado");
+        }
+        if (thePermission == null) {
+            System.out.println("Permission no encontrado");
+        }
+
         if(theRole!=null && thePermission!=null){
             RolePermission newRolePermission=new RolePermission();
             newRolePermission.setRole(theRole);
