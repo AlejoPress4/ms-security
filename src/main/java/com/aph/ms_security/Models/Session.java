@@ -16,6 +16,9 @@ public class Session {
     @DBRef
     private User user;
 
+    public Session() {
+    }
+
     public Session(String token, Date expiration, String code2FA) {
         this.token = token;
         this.expiration = expiration;

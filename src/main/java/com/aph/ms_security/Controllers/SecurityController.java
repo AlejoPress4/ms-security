@@ -7,12 +7,12 @@ import com.aph.ms_security.Repositories.Session_Repository;
 import com.aph.ms_security.Repositories.User_Repository;
 import com.aph.ms_security.Services.EncryptionService;
 import com.aph.ms_security.Services.JwtService;
+import com.aph.ms_security.Services.NotificationService;
 import com.aph.ms_security.Services.ValidatorsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,6 +21,8 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/api/public/security")
 public class SecurityController {
+    @Autowired
+    private NotificationService theNotificationService;
     @Autowired
     private User_Repository theUserRepository;
     @Autowired
@@ -44,8 +46,8 @@ public class SecurityController {
             token=theJwtService.generateToken(theActualUser); //Generamos un token
             Session theSession = new Session(number, theActualUser, token);
             this.theSessionRepository.save(theSession);
+            theNotificationService.sendCodeByEmail(theActualUser, number);
             theActualUser.setPassword("");
-            theResponse.put("token",token);
             theResponse.put("user",theActualUser);
             return theResponse;
         }else{
@@ -67,7 +69,7 @@ public class SecurityController {
                 String token = theJwtService.generateToken(theUser);
                 this.theSessionRepository.save(theOldSession);
                 response.setStatus(HttpServletResponse.SC_OK);
-                return "message: "+ token;
+                return "Token: "+ token;
             } else {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
