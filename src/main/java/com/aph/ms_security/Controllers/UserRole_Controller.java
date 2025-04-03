@@ -59,11 +59,13 @@ public class UserRole_Controller {
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id){
-        User theUser=this.theUserRepository.findById(id).orElse(null);
-        if (theUser!=null){
-            this.theUserRepository.delete(theUser);
-        }
+    public void delete(@PathVariable String id) {
+        // Busca el UserRole por su ID
+        UserRole userRole = this.theUserRoleRepository.findById(id).orElse(null);
+        // Verifica si el UserRole existe y lo elimina
+        if (userRole != null) {
+            this.theUserRoleRepository.delete(userRole);
+}
     }
 
 

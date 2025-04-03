@@ -12,6 +12,7 @@ import com.aph.ms_security.Services.ValidatorsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -89,5 +90,44 @@ public class SecurityController {
         int number = (int)(Math.random()*90000+10000);
         return String.valueOf(number);
     }
+
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @DeleteMapping("/singout/session/{idSession}")
+//    public void closeSession(@PathVariable String idUser, @PathVariable String idSession, final HttpServletResponse response)throws IOException {
+//        Session theSession = this.theSessionRepository.findById(idSession).orElse(null);
+//        if (theSession != null) {
+//            this.theSessionRepository.delete(theSession);
+//        }
+//    }
+
+    @PostMapping("/resetpassword/{userId}")
+    public String resetPassword(@PathVariable String userId, final HttpServletResponse response) throws IOException{
+        User theActualUser = this.theUserRepository.findById(userId).orElse(null);
+        if (theActualUser != null){
+            String number = this.generateRandom();
+            theActualUser.setPasswordResetToken(number);
+            this.theUserRepository.save(theActualUser);
+            theNotificationService.sendResetLink(theActualUser, number);
+        }else{
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return "message: User not found";
+        }
+        return "message: Reset code sent";
+    }
+
+    @PostMapping("/resetpassword/{userId}/{code}")
+    public String resetPassword(@PathVariable String userId , @PathVariable String code, @RequestBody String password, final HttpServletResponse response) throws IOException{
+        User theActualUser = this.theUserRepository.findById(userId).orElse(null);
+        if (theActualUser.getPasswordResetToken().equals(code)){
+            theActualUser.setPassword(theEncryptionService.convertSHA256(password));
+            theActualUser.setPasswordResetToken("");
+            this.theUserRepository.save(theActualUser);
+            return "message: Password reseted";
+        }
+        return "message: algo salio mal";
+
+    }
+
+    
 
 }
