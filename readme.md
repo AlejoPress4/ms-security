@@ -40,6 +40,17 @@ Este proyecto es una aplicación Spring Boot que gestiona los permisos de roles 
 
 Para ejecutar la aplicación, utiliza el siguiente comando:
 
+
+## Proceso condiciones
+(si es para crear una nueva entidad debemos crear el modelo y el repo)
+Asignar los nuevos atributos o crear nueva entidad
+Geter y seters (posiblemente modificacion en el repo (database))
+crear nueva ruta en el controlador (metodo)
+
+
+
+si necesitamos que necesitamos algo con la ruta debemos mirar el validador
+
 ```bash
 mvn spring-boot:run
 

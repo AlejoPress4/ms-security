@@ -116,17 +116,18 @@ public class SecurityController {
     }
 
     @PostMapping("/resetpassword/{userId}/{code}")
-    public String resetPassword(@PathVariable String userId , @PathVariable String code, @RequestBody String password, final HttpServletResponse response) throws IOException{
+    public String resetPassword(@PathVariable String userId, @PathVariable String code, @RequestBody String password, final HttpServletResponse response) throws IOException {
         User theActualUser = this.theUserRepository.findById(userId).orElse(null);
-        if (theActualUser.getPasswordResetToken().equals(code)){
+        if (theActualUser != null && theActualUser.getPasswordResetToken().equals(code)) {
             theActualUser.setPassword(theEncryptionService.convertSHA256(password));
             theActualUser.setPasswordResetToken("");
             this.theUserRepository.save(theActualUser);
-            return "message: Password reseted";
+            return "message: Password reset successfully";
         }
-        return "message: algo salio mal";
-
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        return "message: Invalid reset code or user";
     }
+
 
     
 
