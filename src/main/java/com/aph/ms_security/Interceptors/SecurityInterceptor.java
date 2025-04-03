@@ -17,9 +17,18 @@ public class SecurityInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler)
             throws Exception {
-        boolean success=this.validatorService.validationRolePermission(request,request.getRequestURI(),request.getMethod());
-        return success;
+        String requestURI = request.getRequestURI();
+        String method = request.getMethod();
+        //boolean success=this.validatorService.validationRolePermission(request,request.getRequestURI(),request.getMethod());
+        // Validar la nueva ruta
+        if (requestURI.equals("/role-permission/most-used") && method.equals("GET")) {
+            return true; // Permitir acceso a esta ruta
+        }
+
+        // Otras validaciones...
+        return this.validatorService.validationRolePermission(request, requestURI, method);
     }
+
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
@@ -32,4 +41,6 @@ public class SecurityInterceptor implements HandlerInterceptor {
                                 Exception ex) throws Exception {
         // Lógica a ejecutar después de completar la solicitud, incluso después de la renderización de la vista
     }
+
+
 }

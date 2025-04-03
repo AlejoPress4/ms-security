@@ -71,3 +71,54 @@ La aplicación se iniciará en `http://localhost:8081`.
 - Spring Boot
 - Spring Data MongoDB
 - Maven
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modificar RolePermissionRepository
+Actualizar RolePermissionController
+Método get
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public interface RolePermissionRepository extends MongoRepository<RolePermission, String> {
+
+    List<RolePermission> findAll(); // Recuperar todas las relaciones
+
+    default String findMostUsedPermissionUrl() {
+        List<RolePermission> allRolePermissions = findAll();
+
+        if (allRolePermissions.isEmpty()) {
+            return null;
+        }
+
+        // Contar la frecuencia de cada permiso
+        Map<String, Long> permissionCount = allRolePermissions.stream()
+                .collect(Collectors.groupingBy(
+                        rp -> rp.getPermission().getUrl(), 
+                        Collectors.counting()
+                ));
+
+        // Obtener el permiso más usado
+        return permissionCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+}

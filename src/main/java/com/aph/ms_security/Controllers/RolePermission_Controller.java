@@ -68,4 +68,9 @@ public class RolePermission_Controller {
         return this.theRolePermissionRepository.getPermissionsByRole(roleId);
     }
 
+    @GetMapping("/most-used")
+    public String getMostUsedPermission() {
+        return theRolePermissionRepository.findMostUsedPermissionUrl();
+    }
+
 }
