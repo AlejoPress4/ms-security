@@ -41,8 +41,10 @@ public class SecurityController {
         HashMap<String,Object> theResponse=new HashMap<>(); //Creamos un HashMap para almacenar la respuesta
         String token=""; //Creamos una variable token
         User theActualUser=this.theUserRepository.getUserByEmail(theNewUser.getEmail()); //Verificamos si el usuario existe
+        
         if(theActualUser!=null && //Si el usuario existe
            theActualUser.getPassword().equals(theEncryptionService.convertSHA256(theNewUser.getPassword()))){ //Si el usuario existe y la contraseña es correcta
+
             String number = this.generateRandom();
             token=theJwtService.generateToken(theActualUser); //Generamos un token
             Session theSession = new Session(number, theActualUser, token);
@@ -52,6 +54,7 @@ public class SecurityController {
             theResponse.put("user",theActualUser);
             return theResponse;
         }else{
+
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return  theResponse;
         }
@@ -67,6 +70,10 @@ public class SecurityController {
             System.out.println("entrop 1");
             if (theNewSession.getCode2FA().equals(theOldSession.getCode2FA())) {
                 System.out.println("entrop 2");
+
+                theUser.incrementLoginCount();
+                this.theUserRepository.save(theUser);
+
                 String token = theJwtService.generateToken(theUser);
                 this.theSessionRepository.save(theOldSession);
                 response.setStatus(HttpServletResponse.SC_OK);

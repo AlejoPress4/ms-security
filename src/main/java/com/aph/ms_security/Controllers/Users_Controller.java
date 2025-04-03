@@ -39,9 +39,9 @@ public class Users_Controller {
     @PostMapping
     public User store(@RequestBody User newUser) {
         if (theUserRepository.getUserByEmail(newUser.getEmail()) == null) {
-            newUser.setPassword(theEncryptionService.convertSHA256(newUser.getPassword()));//Encriptamos la contraseña
+            newUser.setPassword(theEncryptionService.convertSHA256(newUser.getPassword()));// Encriptamos la contraseña
             return this.theUserRepository.save(newUser);
-        } //Metodo para que usuario no se pueda volver a registrar
+        } // Metodo para que usuario no se pueda volver a registrar
         else {
             return null;
         }
@@ -59,6 +59,7 @@ public class Users_Controller {
             return null;
         }
     }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{id}")
     public void delete(@PathVariable String id) {
@@ -81,7 +82,14 @@ public class Users_Controller {
         }
     }
 
-    //Falta delete
-
+    @GetMapping("{id}/login-count")
+    public int getLoginCount(@PathVariable String id) {
+        User theUser = this.theUserRepository.findById(id).orElse(null);
+        if (theUser != null) {
+            return theUser.getLoginCount();
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
 
 }

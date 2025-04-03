@@ -81,5 +81,19 @@ public class User {
     public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
     }
+
+    private int loginCount = 0; // Inicializamos el contador en 0
+
+    public int getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(int loginCount) {
+        this.loginCount = loginCount;
+    }
+
+    public void incrementLoginCount() {
+        this.loginCount++;
+    }
 }
 

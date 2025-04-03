@@ -14,6 +14,11 @@ public class RolePermission {
     private Role role;
     @DBRef
     private Permission permission;
+    private int usageCount = 0; // Nuevo campo para contar el uso
+
+    public void incrementUsageCount() {
+        this.usageCount++;
+    }
 
     public RolePermission() {
     }
