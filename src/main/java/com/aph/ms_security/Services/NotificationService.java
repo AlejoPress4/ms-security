@@ -72,19 +72,7 @@ public class NotificationService {
 
     }
 
-    // /**
-    //  * Sends the generated code to the specified user's email.
-    //  *
-    //  * @param user the user to send the code to
-    //  * @param newPassword the generated code
-    //  */
-    // public boolean sendPasswordResetEmail(User user, String newPassword) {
-    //   var body = new HashMap<String, String>();
-    //   body.put("email", user.getEmail());
-    //   body.put("username", user.getName());
-    //   body.put("newPassword", newPassword);
-    //   body.put("resetUrl", passwordResetUrl);
 
-    //   return send(passwordUrl, body);
-    // }
+
+
 }

@@ -15,6 +15,8 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private String passwordResetToken;
+
 
     @DBRef
     private Role role;
@@ -68,6 +70,16 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    //Establecer la parte de la recuperacion de contraseñas
+    //Token es el codigo de recuperacion
+    public String getPasswordResetToken() {
+        return this.passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
     }
 }
 
