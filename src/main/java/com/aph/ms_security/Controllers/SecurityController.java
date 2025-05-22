@@ -58,19 +58,20 @@ public class SecurityController {
     }
 
     @PostMapping("login/2FA/{idUser}")
-    public String secondFactor(@RequestBody Session theNewSession, @PathVariable String idUser, final HttpServletResponse response) throws IOException {
+    public HashMap<String,Object> secondFactor(@RequestBody Session theNewSession, @PathVariable String idUser, final HttpServletResponse response) throws IOException {
 
         User theUser = this.theUserRepository.findById(idUser).orElse(null);
         Session theOldSession = this.theSessionRepository.getSession(theUser.get_id(), theNewSession.getCode2FA());
-
+        HashMap<String,Object> theResponse=new HashMap<>();
         if (theUser != null && theOldSession != null) {
             System.out.println("entrop 1");
             if (theNewSession.getCode2FA().equals(theOldSession.getCode2FA())) {
                 System.out.println("entrop 2");
                 String token = theJwtService.generateToken(theUser);
                 this.theSessionRepository.save(theOldSession);
+                theResponse.put("token", token);
                 response.setStatus(HttpServletResponse.SC_OK);
-                return "Token: "+ token;
+                return theResponse;
             } else {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }

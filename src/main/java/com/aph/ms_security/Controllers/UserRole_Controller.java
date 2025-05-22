@@ -41,6 +41,8 @@ public class UserRole_Controller {
             UserRole newUserRole=new UserRole();
             newUserRole.setUser(theUser);
             newUserRole.setRole(theRole);
+            theUser.setRole(theRole);
+            this.theUserRepository.save(theUser);
             return this.theUserRoleRepository.save(newUserRole);
         }else{
             return null;
