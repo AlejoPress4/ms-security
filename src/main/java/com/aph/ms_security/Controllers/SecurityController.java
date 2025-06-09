@@ -1,14 +1,13 @@
 package com.aph.ms_security.Controllers;
 
+import com.aph.ms_security.DTO.LoginRequest;
+import com.aph.ms_security.DTO.PasswordRecoveryRequest;
 import com.aph.ms_security.Models.Permission;
 import com.aph.ms_security.Models.Session;
 import com.aph.ms_security.Models.User;
 import com.aph.ms_security.Repositories.Session_Repository;
 import com.aph.ms_security.Repositories.User_Repository;
-import com.aph.ms_security.Services.EncryptionService;
-import com.aph.ms_security.Services.JwtService;
-import com.aph.ms_security.Services.NotificationService;
-import com.aph.ms_security.Services.ValidatorsService;
+import com.aph.ms_security.Services.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +33,34 @@ public class SecurityController {
     private ValidatorsService theValidatorsService;
     @Autowired
     private Session_Repository theSessionRepository;
+    @Autowired
+    private CaptchaService captchaService;
 
     @PostMapping("/login")
-    public HashMap<String,Object> login(@RequestBody User theNewUser, //Recibimos un objeto User en request
-                                        final HttpServletResponse response)throws IOException {
-        HashMap<String,Object> theResponse=new HashMap<>(); //Creamos un HashMap para almacenar la respuesta
-        String token=""; //Creamos una variable token
-        User theActualUser=this.theUserRepository.getUserByEmail(theNewUser.getEmail()); //Verificamos si el usuario existe
-        if(theActualUser!=null && //Si el usuario existe
-           theActualUser.getPassword().equals(theEncryptionService.convertSHA256(theNewUser.getPassword()))){ //Si el usuario existe y la contraseña es correcta
+    public HashMap<String,Object> login(@RequestBody LoginRequest loginRequest,
+                                        final HttpServletResponse response) throws IOException {
+        HashMap<String,Object> theResponse = new HashMap<>();
+
+        // Validar captcha
+        if (!captchaService.verifyCaptcha(loginRequest.getCaptchaToken())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Captcha inválido");
+            return theResponse;
+        }
+
+        User theActualUser = this.theUserRepository.getUserByEmail(loginRequest.getEmail());
+        if (theActualUser != null &&
+                theActualUser.getPassword().equals(theEncryptionService.convertSHA256(loginRequest.getPassword()))) {
             String number = this.generateRandom();
-            token=theJwtService.generateToken(theActualUser); //Generamos un token
+            String token = theJwtService.generateToken(theActualUser);
             Session theSession = new Session(number, theActualUser, token);
             this.theSessionRepository.save(theSession);
             theNotificationService.sendCodeByEmail(theActualUser, number);
             theActualUser.setPassword("");
-            theResponse.put("user",theActualUser);
+            theResponse.put("user", theActualUser);
             return theResponse;
-        }else{
+        } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return  theResponse;
+            return theResponse;
         }
     }
 
@@ -130,9 +137,13 @@ public class SecurityController {
 //    }
 
     @PostMapping("/resetpassword/email")
-    public String resetPasswordByEmail(@RequestBody String email, final HttpServletResponse response)
+    public String resetPasswordByEmail(@RequestBody PasswordRecoveryRequest request, final HttpServletResponse response)
             throws IOException {
-        User theActualUser = this.theUserRepository.getUserByEmail(email);
+        if (!captchaService.verifyCaptcha(request.getCaptchaToken())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Captcha inválido");
+            return "message: Captcha inválido";
+        }
+        User theActualUser = this.theUserRepository.getUserByEmail(request.getEmail());
         if (theActualUser != null) {
             String number = this.generateRandom();
             theActualUser.setPasswordResetToken(number);
