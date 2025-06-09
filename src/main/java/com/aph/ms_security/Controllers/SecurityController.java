@@ -101,34 +101,64 @@ public class SecurityController {
 //        }
 //    }
 
-    @PostMapping("/resetpassword/{userId}")
-    public String resetPassword(@PathVariable String userId, final HttpServletResponse response) throws IOException{
-        User theActualUser = this.theUserRepository.findById(userId).orElse(null);
-        if (theActualUser != null){
+//    @PostMapping("/resetpassword/{userId}")
+//    public String resetPassword(@PathVariable String userId, final HttpServletResponse response) throws IOException{
+//        User theActualUser = this.theUserRepository.findById(userId).orElse(null);
+//        if (theActualUser != null){
+//            String number = this.generateRandom();
+//            theActualUser.setPasswordResetToken(number);
+//            this.theUserRepository.save(theActualUser);
+//            theNotificationService.sendResetLink(theActualUser, number);
+//        }else{
+//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+//            return "message: User not found";
+//        }
+//        return "message: Reset code sent";
+//    }
+//
+//    @PostMapping("/resetpassword/{userId}/{code}")
+//    public String resetPassword(@PathVariable String userId , @PathVariable String code, @RequestBody String password, final HttpServletResponse response) throws IOException{
+//        User theActualUser = this.theUserRepository.findById(userId).orElse(null);
+//        if (theActualUser.getPasswordResetToken().equals(code)){
+//            theActualUser.setPassword(theEncryptionService.convertSHA256(password));
+//            theActualUser.setPasswordResetToken("");
+//            this.theUserRepository.save(theActualUser);
+//            return "message: Password reseted";
+//        }
+//        return "message: algo salio mal";
+//
+//    }
+
+    @PostMapping("/resetpassword/email")
+    public String resetPasswordByEmail(@RequestBody String email, final HttpServletResponse response)
+            throws IOException {
+        User theActualUser = this.theUserRepository.getUserByEmail(email);
+        if (theActualUser != null) {
             String number = this.generateRandom();
             theActualUser.setPasswordResetToken(number);
             this.theUserRepository.save(theActualUser);
             theNotificationService.sendResetLink(theActualUser, number);
-        }else{
+        } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return "message: User not found";
         }
         return "message: Reset code sent";
     }
 
-    @PostMapping("/resetpassword/{userId}/{code}")
-    public String resetPassword(@PathVariable String userId , @PathVariable String code, @RequestBody String password, final HttpServletResponse response) throws IOException{
-        User theActualUser = this.theUserRepository.findById(userId).orElse(null);
-        if (theActualUser.getPasswordResetToken().equals(code)){
+    @PostMapping("/resetpassword/email/{code}")
+    public String resetPasswordByEmailAndCode(@RequestBody HashMap<String, String> body, @PathVariable String code,
+                                              final HttpServletResponse response) throws IOException {
+        String email = body.get("email");
+        String password = body.get("password");
+        User theActualUser = this.theUserRepository.getUserByEmail(email);
+        if (theActualUser != null && theActualUser.getPasswordResetToken().equals(code)) {
             theActualUser.setPassword(theEncryptionService.convertSHA256(password));
             theActualUser.setPasswordResetToken("");
             this.theUserRepository.save(theActualUser);
             return "message: Password reseted";
         }
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         return "message: algo salio mal";
-
     }
-
-    
 
 }

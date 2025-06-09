@@ -65,7 +65,7 @@ public class NotificationService {
     public boolean sendResetLink( User user, String code){
         HashMap<String, String> body = new HashMap<String, String>();
         body.put("recipient", user.getEmail());
-        body.put("message", SecurityUrl+"/reset_password/"+user.get_id()+"/"+code);
+        body.put("message", code);
 
         return send(notificationsUrl+"/send_reset_link", body);
 
